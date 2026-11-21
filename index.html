@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocReady — Zero-Login Client Document Chase for Bookkeepers</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .font-mono { font-family: 'IBM Plex Mono', monospace; }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen flex flex-col">
+
+  <!-- Top Navigation -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3 min-w-0">
+        <div class="w-9 h-9 rounded-lg bg-blue-700 flex items-center justify-center shrink-0" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <path d="m9 15 2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="truncate">
+          <span class="font-bold text-slate-900 tracking-tight text-lg">DocReady</span>
+          <span id="headerFirmName" class="hidden sm:inline-block ml-2 text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Summit Ledger Advisory</span>
+        </div>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="hidden md:flex items-center gap-1" aria-label="Primary navigation">
+        <button type="button" data-tab="dashboard" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Readiness Board</button>
+        <button type="button" data-tab="portal" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Client Magic-Link View</button>
+        <button type="button" data-tab="templates" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Templates &amp; Reminders</button>
+        <button type="button" data-tab="settings" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Branding &amp; Export</button>
+      </nav>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <button type="button" id="openNewClientBtn" class="bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold px-3.5 py-2 rounded-lg transition-colors shadow-sm">
+          + Add Client
+        </button>
+        <button type="button" id="mobileMenuBtn" class="md:hidden p-2 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100" aria-label="Toggle menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Nav Drawer -->
+    <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-2 space-y-1">
+      <button type="button" data-tab="dashboard" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Readiness Board</button>
+      <button type="button" data-tab="portal" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Client Magic-Link View</button>
+      <button type="button" data-tab="templates" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Templates &amp; Reminders</button>
+      <button type="button" data-tab="settings" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Branding &amp; Export</button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- VIEW 1: FIRM READINESS DASHBOARD -->
+    <section id="view-dashboard" class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Monthly Close Readiness Board</h1>
+          <p class="text-sm text-slate-600 mt-0.5">Track every client's required files without chasing email threads or forcing client logins.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label for="periodSelect" class="text-xs font-medium text-slate-500">Close Period:</label>
+          <select id="periodSelect" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-medium text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-600">
+            <option value="2026-11">Nov 2026 Close</option>
+            <option value="2026-10">Oct 2026 Close</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white border border-slate-200 rounded-xl p-4">
+          <div class="text-xs font-medium text-slate-500">Close Readiness</div>
+          <div id="kpiReadiness" class="text-2xl font-bold font-mono tabular-nums text-slate-900 mt-1">0%</div>
+          <div id="kpiReadinessSub" class="text-xs text-slate-500 mt-1">0 of 0 docs validated</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4">
+          <div class="text-xs font-medium text-slate-500">Clients Ready</div>
+          <div id="kpiClientsReady" class="text-2xl font-bold font-mono tabular-nums text-emerald-700 mt-1">0 / 0</div>
+          <div class="text-xs text-slate-500 mt-1">100% docs received</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4">
+          <div class="text-xs font-medium text-slate-500">Pending / Missing</div>
+          <div id="kpiPending" class="text-2xl font-bold font-mono tabular-nums text-amber-600 mt-1">0</div>
+          <div class="text-xs text-slate-500 mt-1">Awaiting client upload</div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-4">
+          <div class="text-xs font-medium text-slate-500">Overdue Clients</div>
+          <div id="kpiOverdue" class="text-2xl font-bold font-mono tabular-nums text-rose-600 mt-1">0</div>
+          <div class="text-xs text-slate-500 mt-1">Past target close date</div>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+        <div class="flex flex-wrap items-center gap-2">
+          <button type="button" data-filter="all" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">All Clients</button>
+          <button type="button" data-filter="chasing" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">Chasing</button>
+          <button type="button" data-filter="overdue" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">Overdue</button>
+          <button type="button" data-filter="ready" class="filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors">Ready</button>
+        </div>
+        <div class="flex items-center gap-2">
+          <input id="searchInput" type="search" placeholder="Search client or contact..." class="w-full sm:w-64 bg-slate-50 border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-600" />
+          <button type="button" id="chaseAllBtn" class="shrink-0 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-800 hover:bg-blue-100 text-xs font-semibold transition-colors">
+            Chase All Incomplete
+          </button>
+        </div>
+      </div>
+
+      <!-- Client Readiness Table -->
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="border-b border-slate-200 bg-slate-50 text-xs font-mono text-slate-500 uppercase">
+                <th class="py-3 px-4">Client</th>
+                <th class="py-3 px-4">Due Date</th>
+                <th class="py-3 px-4">Progress</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">Last Chased</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="clientsTableBody" class="divide-y divide-slate-200 text-sm"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: CLIENT MAGIC-LINK PORTAL (ZERO-LOGIN) -->
+    <section id="view-portal" class="hidden max-w-2xl mx-auto space-y-6">
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-amber-900">
+        <div>
+          <strong>Live Client Preview Mode:</strong> This is what your client sees when they tap their magic link—zero passwords, mobile-first.
+        </div>
+        <select id="portalClientSelect" class="bg-white border border-amber-300 rounded-lg px-2.5 py-1 text-xs font-medium text-slate-800"></select>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div id="portalBanner" class="bg-blue-700 text-white p-6">
+          <div class="flex items-center justify-between gap-2">
+            <span id="portalFirmBadge" class="text-xs font-medium uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-full">Summit Ledger Advisory</span>
+            <span id="portalPeriodBadge" class="text-xs font-mono bg-white/15 px-2.5 py-1 rounded-full">Nov 2026 Close</span>
+          </div>
+          <h2 id="portalClientTitle" class="text-xl sm:text-2xl font-bold mt-3">Document Checklist</h2>
+          <p id="portalSubtitle" class="text-sm text-blue-100 mt-1">Upload your files below. No account or password needed.</p>
+          <div class="mt-4 bg-white/15 rounded-full h-2 overflow-hidden">
+            <div id="portalProgressBar" class="bg-emerald-400 h-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <div class="flex justify-between text-xs text-blue-100 mt-1.5 font-mono">
+            <span id="portalProgressText">0 of 0 completed</span>
+            <span id="portalDueText">Due: Nov 10</span>
+          </div>
+        </div>
+
+        <div id="portalChecklist" class="divide-y divide-slate-200"></div>
+
+        <div class="p-5 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <p class="text-xs text-slate-500">Files are encrypted in transit. Need help? Reply to your bookkeeper's email.</p>
+          <button type="button" id="portalSubmitBtn" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors">
+            Notify Bookkeeper I'm Done
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: TEMPLATES & AUTO-REMINDERS -->
+    <section id="view-templates" class="hidden space-y-6">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Checklist Templates &amp; Auto-Reminders</h1>
+        <p class="text-sm text-slate-600 mt-0.5">Standardize monthly close requests and automate polite follow-ups.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6">
+        <!-- Templates List -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h2 class="text-base font-bold text-slate-900">Reusable Close Templates</h2>
+            <span class="text-xs font-mono text-slate-500">4 active</span>
+          </div>
+          <div id="templatesList" class="space-y-3"></div>
+          <form id="newTemplateForm" class="pt-3 border-t border-slate-200 space-y-2.5">
+            <div class="text-xs font-semibold text-slate-700">Create Custom Template</div>
+            <input id="tplNameInput" type="text" required placeholder="Template name (e.g., Construction Subcontractor Close)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+            <input id="tplItemsInput" type="text" required placeholder="Comma-separated docs (e.g., Bank Statement, W-9, Fuel Receipts)" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+            <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg">Save Template</button>
+          </form>
+        </div>
+
+        <!-- Auto-Reminder Cadence -->
+        <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
+          <h2 class="text-base font-bold text-slate-900">Automated Reminder Cadence</h2>
+          <p class="text-xs text-slate-600">Only clients with missing documents receive reminders. Ready clients are never spammed.</p>
+          <div class="space-y-3">
+            <label class="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <div>
+                <div class="text-sm font-semibold text-slate-800">5 Days Before Due Date</div>
+                <div class="text-xs text-slate-500">Friendly kick-off email with 1-click magic link</div>
+              </div>
+              <input type="checkbox" id="remT5" checked class="w-4 h-4 accent-blue-700" />
+            </label>
+            <label class="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <div>
+                <div class="text-sm font-semibold text-slate-800">2 Days Before Due Date</div>
+                <div class="text-xs text-slate-500">Lists only the remaining unuploaded items</div>
+              </div>
+              <input type="checkbox" id="remT2" checked class="w-4 h-4 accent-blue-700" />
+            </label>
+            <label class="flex items-center justify-between p-3 rounded-lg border border-slate-200 bg-slate-50">
+              <div>
+                <div class="text-sm font-semibold text-slate-800">Overdue (+2 Days After Due)</div>
+                <div class="text-xs text-slate-500">Flags books as delayed until missing files arrive</div>
+              </div>
+              <input type="checkbox" id="remOverdue" checked class="w-4 h-4 accent-blue-700" />
+            </label>
+          </div>
+          <button type="button" id="saveCadenceBtn" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold rounded-lg">Save Reminder Settings</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 4: BRANDING & EXPORT -->
+    <section id="view-settings" class="hidden max-w-2xl space-y-6">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900 tracking-tight">Firm Branding &amp; Data Export</h1>
+        <p class="text-sm text-slate-600 mt-0.5">Customize how your client magic-link portal looks and export audit-ready status logs.</p>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-xl p-5 space-y-4">
+        <div>
+          <label for="firmNameInput" class="block text-xs font-semibold text-slate-700 mb-1">Accounting / Bookkeeping Firm Name</label>
+          <input id="firmNameInput" type="text" value="Summit Ledger Advisory" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label for="firmEmailInput" class="block text-xs font-semibold text-slate-700 mb-1">Reply-To Email for Client Reminders</label>
+          <input id="firmEmailInput" type="email" value="close@summitledger.example" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label for="firmColorSelect" class="block text-xs font-semibold text-slate-700 mb-1">Portal Header Accent Color</label>
+          <select id="firmColorSelect" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm">
+            <option value="bg-blue-700">Cobalt Blue (Default)</option>
+            <option value="bg-slate-900">Executive Slate</option>
+            <option value="bg-emerald-700">Ledger Emerald</option>
+            <option value="bg-indigo-700">Deep Indigo</option>
+          </select>
+        </div>
+        <button type="button" id="saveBrandingBtn" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold rounded-lg">Apply Branding</button>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-base font-bold text-slate-900">Export Readiness Report (CSV)</h2>
+          <p class="text-xs text-slate-600 mt-0.5">Download a complete client × document status log for your workpapers.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" id="exportCsvBtn" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-lg">Download CSV</button>
+          <button type="button" id="resetDemoBtn" class="px-3 py-2 border border-slate-300 hover:bg-slate-100 text-slate-700 text-xs font-semibold rounded-lg">Reset Demo Data</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Modal: Add New Client -->
+  <div id="newClientModal" class="hidden fixed inset-0 z-40 bg-slate-900/50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-bold text-slate-900">Add Client to Close Board</h2>
+        <button type="button" id="closeNewClientModal" class="text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button>
+      </div>
+      <form id="newClientForm" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Client Business Name</label>
+          <input id="ncName" type="text" required placeholder="e.g., Harbor Coffee Roasters LLC" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Client Contact Email</label>
+          <input id="ncEmail" type="email" required placeholder="owner@harborcoffee.com" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Due Date</label>
+            <input id="ncDue" type="date" required value="2026-11-22" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Checklist Template</label>
+            <select id="ncTemplate" class="w-full border border-slate-300 rounded-lg px-3 py-2 text-sm"></select>
+          </div>
+        </div>
+        <div class="pt-2 flex justify-end gap-2">
+          <button type="button" id="cancelNewClientBtn" class="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+          <button type="submit" class="px-4 py-2 text-sm font-semibold bg-blue-700 hover:bg-blue-800 text-white rounded-lg">Create &amp; Generate Magic Link</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Client Detail / Bookkeeper Validation -->
+  <div id="clientDetailModal" class="hidden fixed inset-0 z-40 bg-slate-900/50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-xl max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 id="cdTitle" class="text-lg font-bold text-slate-900">Client Documents</h2>
+          <p id="cdEmail" class="text-xs text-slate-500"></p>
+        </div>
+        <button type="button" id="closeDetailModal" class="text-slate-400 hover:text-slate-700 text-xl leading-none">&times;</button>
+      </div>
+      <div id="cdDocsList" class="divide-y divide-slate-200 border-t border-b border-slate-200"></div>
+      <form id="cdAddDocForm" class="flex gap-2">
+        <input id="cdNewDocInput" type="text" required placeholder="Add ad-hoc request (e.g., Missing $412 Home Depot receipt)" class="flex-1 border border-slate-300 rounded-lg px-3 py-1.5 text-sm" />
+        <button type="submit" class="px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg">Add</button>
+      </form>
+      <div class="flex justify-between items-center pt-1">
+        <button type="button" id="cdOpenPortalBtn" class="text-xs font-semibold text-blue-700 hover:underline">Open Client Magic-Link View →</button>
+        <button type="button" id="cdSendReminderBtn" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white text-xs font-semibold rounded-lg">Send Chase Reminder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg max-w-sm"></div>
+
+  <script>
+    const STORAGE_KEY = 'docready_state_v1';
+
+    const DEFAULT_TEMPLATES = [
+      { id: 'tpl-smb', name: 'Standard SMB Monthly Close', items: ['Business Checking Statement (PDF)', 'Business Credit Card Statement', 'Payroll Summary Report', 'Loan / Line of Credit Statement'] },
+      { id: 'tpl-ecom', name: 'E-Commerce Seller Close', items: ['Shopify Payouts CSV', 'Amazon Seller Settlement Report', 'Stripe / PayPal Monthly Summary', 'Inventory / COGS Invoices'] },
+      { id: 'tpl-scorp', name: 'S-Corp Quarterly Pack', items: ['941 Payroll Tax Filing', 'Owner Distribution Log', 'State Sales Tax Return', 'Updated Balance Sheet'] },
+      { id: 'tpl-1099', name: 'Year-End 1099 W-9 Chase', items: ['Signed Form W-9', 'Contractor Mailing Address Confirmation'] }
+    ];
+
+    const DEFAULT_CLIENTS = [
+      {
+        id: 'c1', period: '2026-11', name: 'Oakridge Dental Studio', email: 'dr.patel@oakridgedental.example',
+        dueDate: '2026-11-15', lastChased: 'Nov 16, 2026', token: 'dr-oak-92a4',
+        docs: [
+          { id: 'd1', title: 'Chase Business Checking Statement (PDF)', status: 'validated', fileName: 'chase_nov2026.pdf' },
+          { id: 'd2', title: 'Amex Business Gold Statement', status: 'received', fileName: 'amex_gold_nov.pdf' },
+          { id: 'd3', title: 'Gusto Payroll Summary', status: 'missing', fileName: '' },
+          { id: 'd4', title: 'Missing Receipt: $680 Henry Schein Supply', status: 'missing', fileName: '' }
+        ]
+      },
+      {
+        id: 'c2', period: '2026-11', name: 'Vanguard HVAC & Plumbing', email: 'billing@vanguardhvac.example',
+        dueDate: '2026-11-20', lastChased: 'Nov 17, 2026', token: 'dr-van-48c1',
+        docs: [
+          { id: 'd5', title: 'Business Checking Statement (PDF)', status: 'validated', fileName: 'bofa_checking.pdf' },
+          { id: 'd6', title: 'Fleet Fuel Card Statement', status: 'validated', fileName: 'wex_fleet_nov.pdf' },
+          { id: 'd7', title: 'Subcontractor W-9 (Apex Sheet Metal)', status: 'validated', fileName: 'w9_apex.pdf' }
+        ]
+      },
+      {
+        id: 'c3', period: '2026-11', name: 'Lumen Skincare Co. (Shopify)', email: 'ops@lumenskincare.example',
+        dueDate: '2026-11-12', lastChased: 'Nov 14, 2026', token: 'dr-lum-71f9',
+        docs: [
+          { id: 'd8', title: 'Shopify Payouts CSV', status: 'received', fileName: 'shopify_nov_payouts.csv' },
+          { id: 'd9', title: 'Amazon Seller Settlement Report', status: 'missing', fileName: '' },
+          { id: 'd10', title: 'Meta Ads Monthly Invoice', status: 'missing', fileName: '' },
+          { id: 'd11', title: '3PL Fulfillment Invoice', status: 'missing', fileName: '' }
+        ]
+      },
+      {
+        id: 'c4', period: '2026-11', name: 'Redwood Architecture Group', email: 'finance@redwoodarch.example',
+        dueDate: '2026-11-22', lastChased: 'Never', token: 'dr-red-33b2',
+        docs: [
+          { id: 'd12', title: 'Operating Checking Statement', status: 'received', fileName: 'mercury_nov.pdf' },
+          { id: 'd13', title: 'Retainer Escrow Reconciliation', status: 'missing', fileName: '' },
+          { id: 'd14', title: 'Corporate Amex Statement', status: 'received', fileName: 'amex_corp.pdf' }
+        ]
+      },
+      {
+        id: 'c5', period: '2026-10', name: 'Oakridge Dental Studio', email: 'dr.patel@oakridgedental.example',
+        dueDate: '2026-10-15', lastChased: 'Oct 14, 2026', token: 'dr-oak-oct',
+        docs: [
+          { id: 'd15', title: 'Chase Business Checking Statement', status: 'validated', fileName: 'chase_oct2026.pdf' },
+          { id: 'd16', title: 'Amex Business Gold Statement', status: 'validated', fileName: 'amex_oct2026.pdf' },
+          { id: 'd17', title: 'Gusto Payroll Summary', status: 'validated', fileName: 'gusto_oct2026.pdf' }
+        ]
+      }
+    ];
+
+    let state = {
+      activeTab: 'dashboard',
+      period: '2026-11',
+      filter: 'all',
+      search: '',
+      portalClientId: 'c1',
+      detailClientId: null,
+      firmName: 'Summit Ledger Advisory',
+      firmEmail: 'close@summitledger.example',
+      firmColor: 'bg-blue-700',
+      templates: DEFAULT_TEMPLATES,
+      clients: DEFAULT_CLIENTS
+    };
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && Array.isArray(parsed.clients)) {
+            state = { ...state, ...parsed };
+          }
+        }
+      } catch (e) { /* ignore storage errors in restricted iframes */ }
+    }
+
+    function saveState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+    }
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.add('hidden'), 3200);
+    }
+
+    function getClientStatus(client) {
+      const total = client.docs.length;
+      const done = client.docs.filter(d => d.status === 'received' || d.status === 'validated').length;
+      if (total > 0 && done === total) return 'ready';
+      const today = '2026-11-17';
+      if (client.dueDate < today) return 'overdue';
+      return 'chasing';
+    }
+
+    function statusBadge(status) {
+      if (status === 'ready') return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">Ready</span>';
+      if (status === 'overdue') return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">Overdue</span>';
+      return '<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">Chasing</span>';
+    }
+
+    function renderAll() {
+      document.getElementById('headerFirmName').textContent = state.firmName;
+      document.getElementById('firmNameInput').value = state.firmName;
+      document.getElementById('firmEmailInput').value = state.firmEmail;
+      document.getElementById('firmColorSelect').value = state.firmColor;
+
+      // Tabs
+      ['dashboard', 'portal', 'templates', 'settings'].forEach(t => {
+        document.getElementById('view-' + t).classList.toggle('hidden', state.activeTab !== t);
+      });
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const active = btn.dataset.tab === state.activeTab;
+        btn.className = active
+          ? 'nav-btn px-3.5 py-2 rounded-lg text-sm font-semibold bg-blue-50 text-blue-800'
+          : 'nav-btn px-3.5 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-100';
+      });
+
+      renderDashboard();
+      renderPortal();
+      renderTemplates();
+      if (state.detailClientId) renderDetailModal();
+    }
+
+    function renderDashboard() {
+      const periodClients = state.clients.filter(c => c.period === state.period);
+      let totalDocs = 0, doneDocs = 0, readyCount = 0, pendingDocs = 0, overdueCount = 0;
+
+      periodClients.forEach(c => {
+        const st = getClientStatus(c);
+        if (st === 'ready') readyCount++;
+        if (st === 'overdue') overdueCount++;
+        c.docs.forEach(d => {
+          totalDocs++;
+          if (d.status === 'received' || d.status === 'validated') doneDocs++;
+          else pendingDocs++;
+        });
+      });
+
+      const pct = totalDocs > 0 ? Math.round((doneDocs / totalDocs) * 100) : 0;
+      document.getElementById('kpiReadiness').textContent = pct + '%';
+      document.getElementById('kpiReadinessSub').textContent = `${doneDocs} of ${totalDocs} docs received`;
+      document.getElementById('kpiClientsReady').textContent = `${readyCount} / ${periodClients.length}`;
+      document.getElementById('kpiPending').textContent = pendingDocs;
+      document.getElementById('kpiOverdue').textContent = overdueCount;
+
+      // Filter buttons
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        const active = btn.dataset.filter === state.filter;
+        btn.className = active
+          ? 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white'
+          : 'filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200';
+      });
+
+      const filtered = periodClients.filter(c => {
+        const st = getClientStatus(c);
+        if (state.filter !== 'all' && st !== state.filter) return false;
+        if (state.search) {
+          const q = state.search.toLowerCase();
+          if (!c.name.toLowerCase().includes(q) && !c.email.toLowerCase().includes(q)) return false;
+        }
+        return true;
+      });
+
+      const tbody = document.getElementById('clientsTableBody');
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500 text-sm">No clients match this filter.</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const total = c.docs.length;
+        const done = c.docs.filter(d => d.status === 'received' || d.status === 'validated').length;
+        const p = total > 0 ? Math.round((done / total) * 100) : 0;
+        const st = getClientStatus(c);
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3.5 px-4">
+              <button type="button" data-action="detail" data-id="${c.id}" class="font-semibold text-slate-900 hover:text-blue-700 text-left">${c.name}</button>
+              <div class="text-xs text-slate-500">${c.email}</div>
+            </td>
+            <td class="py-3.5 px-4 font-mono text-xs text-slate-700 whitespace-nowrap">${c.dueDate}</td>
+            <td class="py-3.5 px-4 min-w-[140px]">
+              <div class="flex items-center gap-2">
+                <div class="flex-1 bg-slate-200 rounded-full h-2 overflow-hidden">
+                  <div class="${p === 100 ? 'bg-emerald-600' : 'bg-blue-600'} h-full" style="width:${p}%"></div>
+                </div>
+                <span class="font-mono text-xs text-slate-700 tabular-nums">${done}/${total}</span>
+              </div>
+            </td>
+            <td class="py-3.5 px-4">${statusBadge(st)}</td>
+            <td class="py-3.5 px-4 font-mono text-xs text-slate-500 whitespace-nowrap">${c.lastChased}</td>
+            <td class="py-3.5 px-4 text-right whitespace-nowrap space-x-1.5">
+              <button type="button" data-action="copy" data-id="${c.id}" class="px-2.5 py-1 rounded-md border border-slate-300 bg-white hover:bg-slate-100 text-xs font-medium text-slate-700">Copy Link</button>
+              <button type="button" data-action="portal" data-id="${c.id}" class="px-2.5 py-1 rounded-md bg-blue-50 hover:bg-blue-100 text-xs font-semibold text-blue-800">Client View</button>
+              <button type="button" data-action="chase" data-id="${c.id}" class="px-2.5 py-1 rounded-md bg-slate-900 hover:bg-slate-800 text-xs font-semibold text-white">Chase</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderPortal() {
+      const sel = document.getElementById('portalClientSelect');
+      sel.innerHTML = state.clients.map(c => `<option value="${c.id}" ${c.id === state.portalClientId ? 'selected' : ''}>${c.name} (${c.period})</option>`).join('');
+
+      const client = state.clients.find(c => c.id === state.portalClientId) || state.clients[0];
+      if (!client) return;
+
+      const banner = document.getElementById('portalBanner');
+      banner.className = `${state.firmColor} text-white p-6`;
+      document.getElementById('portalFirmBadge').textContent = state.firmName;
+      document.getElementById('portalPeriodBadge').textContent = client.period === '2026-11' ? 'Nov 2026 Close' : 'Oct 2026 Close';
+      document.getElementById('portalClientTitle').textContent = `${client.name} — Monthly Checklist`;
+      document.getElementById('portalDueText').textContent = `Due: ${client.dueDate}`;
+
+      const total = client.docs.length;
+      const done = client.docs.filter(d => d.status === 'received' || d.status === 'validated').length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('portalProgressBar').style.width = pct + '%';
+      document.getElementById('portalProgressText').textContent = `${done} of ${total} completed`;
+
+      const list = document.getElementById('portalChecklist');
+      list.innerHTML = client.docs.map(d => {
+        const isDone = d.status === 'received' || d.status === 'validated';
+        return `
+          <div class="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <div class="mt-0.5 w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}">
+                ${isDone ? '✓' : '•'}
+              </div>
+              <div>
+                <div class="text-sm font-semibold text-slate-900">${d.title}</div>
+                <div class="text-xs text-slate-500 mt-0.5 font-mono">
+                  ${isDone ? `Uploaded: ${d.fileName} (${d.status})` : 'Waiting for PDF, CSV, or photo'}
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <label class="cursor-pointer px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700">
+                ${isDone ? 'Replace File' : 'Upload File'}
+                <input type="file" class="hidden portal-file-input" data-client="${client.id}" data-doc="${d.id}" />
+              </label>
+              ${!isDone ? `<button type="button" data-action="sample-upload" data-client="${client.id}" data-doc="${d.id}" class="px-3 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-xs font-semibold text-blue-800">Sample PDF</button>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTemplates() {
+      const list = document.getElementById('templatesList');
+      list.innerHTML = state.templates.map(t => `
+        <div class="p-3.5 rounded-lg border border-slate-200 bg-slate-50">
+          <div class="font-semibold text-sm text-slate-900">${t.name}</div>
+          <div class="text-xs text-slate-600 mt-1">${t.items.join(' · ')}</div>
+        </div>
+      `).join('');
+
+      const ncTpl = document.getElementById('ncTemplate');
+      ncTpl.innerHTML = state.templates.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+    }
+
+    function renderDetailModal() {
+      const c = state.clients.find(x => x.id === state.detailClientId);
+      if (!c) return;
+      document.getElementById('cdTitle').textContent = c.name;
+      document.getElementById('cdEmail').textContent = `${c.email} · Magic Token: ${c.token}`;
+      document.getElementById('cdDocsList').innerHTML = c.docs.map(d => `
+        <div class="py-3 flex items-center justify-between gap-3">
+          <div>
+            <div class="text-sm font-medium text-slate-900">${d.title}</div>
+            <div class="text-xs font-mono text-slate-500">${d.fileName || 'No file yet'}</div>
+          </div>
+          <select data-action="doc-status" data-client="${c.id}" data-doc="${d.id}" class="border border-slate-300 rounded-lg px-2 py-1 text-xs font-semibold">
+            <option value="missing" ${d.status === 'missing' ? 'selected' : ''}>Missing</option>
+            <option value="received" ${d.status === 'received' ? 'selected' : ''}>Received</option>
+            <option value="validated" ${d.status === 'validated' ? 'selected' : ''}>Validated ✓</option>
+          </select>
+        </div>
+      `).join('');
+    }
+
+    // Event Delegation & Handlers
+    document.addEventListener('click', (e) => {
+      const navBtn = e.target.closest('.nav-btn');
+      if (navBtn) {
+        state.activeTab = navBtn.dataset.tab;
+        document.getElementById('mobileMenu').classList.add('hidden');
+        saveState();
+        renderAll();
+        return;
+      }
+
+      const filterBtn = e.target.closest('.filter-btn');
+      if (filterBtn) {
+        state.filter = filterBtn.dataset.filter;
+        renderDashboard();
+        return;
+      }
+
+      const actionEl = e.target.closest('[data-action]');
+      if (!actionEl) return;
+      const action = actionEl.dataset.action;
+      const id = actionEl.dataset.id;
+
+      if (action === 'copy') {
+        const c = state.clients.find(x => x.id === id);
+        const url = `https://docready.app/u/${c.token}`;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).catch(() => {});
+        }
+        showToast(`Copied magic link: ${url}`);
+      } else if (action === 'portal') {
+        state.portalClientId = id;
+        state.activeTab = 'portal';
+        saveState();
+        renderAll();
+      } else if (action === 'chase') {
+        const c = state.clients.find(x => x.id === id);
+        const missing = c.docs.filter(d => d.status === 'missing').length;
+        c.lastChased = 'Just now';
+        saveState();
+        renderDashboard();
+        showToast(missing > 0 ? `Chase email queued for ${c.name} (${missing} missing items)` : `${c.name} is already 100% ready!`);
+      } else if (action === 'detail') {
+        state.detailClientId = id;
+        document.getElementById('clientDetailModal').classList.remove('hidden');
+        renderDetailModal();
+      } else if (action === 'sample-upload') {
+        const c = state.clients.find(x => x.id === actionEl.dataset.client);
+        const d = c.docs.find(x => x.id === actionEl.dataset.doc);
+        d.status = 'received';
+        d.fileName = 'statement_nov2026_sample.pdf';
+        saveState();
+        renderAll();
+        showToast(`Uploaded sample file for "${d.title}"`);
+      }
+    });
+
+    document.addEventListener('change', (e) => {
+      if (e.target.classList.contains('portal-file-input')) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const c = state.clients.find(x => x.id === e.target.dataset.client);
+        const d = c.docs.find(x => x.id === e.target.dataset.doc);
+        d.status = 'received';
+        d.fileName = file.name;
+        saveState();
+        renderAll();
+        showToast(`Uploaded ${file.name}`);
+      } else if (e.target.dataset.action === 'doc-status') {
+        const c = state.clients.find(x => x.id === e.target.dataset.client);
+        const d = c.docs.find(x => x.id === e.target.dataset.doc);
+        d.status = e.target.value;
+        if (d.status === 'missing') d.fileName = '';
+        else if (!d.fileName) d.fileName = 'manual_entry.pdf';
+        saveState();
+        renderAll();
+      }
+    });
+
+    document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('hidden');
+    });
+
+    document.getElementById('periodSelect').addEventListener('change', (e) => {
+      state.period = e.target.value;
+      renderDashboard();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      state.search = e.target.value;
+      renderDashboard();
+    });
+
+    document.getElementById('portalClientSelect').addEventListener('change', (e) => {
+      state.portalClientId = e.target.value;
+      renderPortal();
+    });
+
+    document.getElementById('chaseAllBtn').addEventListener('click', () => {
+      let count = 0;
+      state.clients.filter(c => c.period === state.period).forEach(c => {
+        if (getClientStatus(c) !== 'ready') {
+          c.lastChased = 'Just now';
+          count++;
+        }
+      });
+      saveState();
+      renderDashboard();
+      showToast(`Sent magic-link reminders to ${count} incomplete client(s).`);
+    });
+
+    document.getElementById('portalSubmitBtn').addEventListener('click', () => {
+      const c = state.clients.find(x => x.id === state.portalClientId);
+      showToast(`Notification sent to ${state.firmName} for ${c.name}!`);
+    });
+
+    // New Client Modal
+    document.getElementById('openNewClientBtn').addEventListener('click', () => {
+      renderTemplates();
+      document.getElementById('newClientModal').classList.remove('hidden');
+    });
+    document.getElementById('closeNewClientModal').addEventListener('click', () => document.getElementById('newClientModal').classList.add('hidden'));
+    document.getElementById('cancelNewClientBtn').addEventListener('click', () => document.getElementById('newClientModal').classList.add('hidden'));
+
+    document.getElementById('newClientForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const tpl = state.templates.find(t => t.id === document.getElementById('ncTemplate').value) || state.templates[0];
+      const newId = 'c' + Date.now();
+      const token = 'dr-' + Math.random().toString(36).slice(2, 8);
+      state.clients.unshift({
+        id: newId,
+        period: state.period,
+        name: document.getElementById('ncName').value.trim(),
+        email: document.getElementById('ncEmail').value.trim(),
+        dueDate: document.getElementById('ncDue').value,
+        lastChased: 'Never',
+        token,
+        docs: tpl.items.map((title, idx) => ({ id: newId + '-d' + idx, title, status: 'missing', fileName: '' }))
+      });
+      document.getElementById('newClientModal').classList.add('hidden');
+      e.target.reset();
+      saveState();
+      renderAll();
+      showToast(`Client added! Magic link: docready.app/u/${token}`);
+    });
+
+    // Detail Modal
+    document.getElementById('closeDetailModal').addEventListener('click', () => {
+      state.detailClientId = null;
+      document.getElementById('clientDetailModal').classList.add('hidden');
+    });
+    document.getElementById('cdOpenPortalBtn').addEventListener('click', () => {
+      state.portalClientId = state.detailClientId;
+      state.detailClientId = null;
+      state.activeTab = 'portal';
+      document.getElementById('clientDetailModal').classList.add('hidden');
+      renderAll();
+    });
+    document.getElementById('cdSendReminderBtn').addEventListener('click', () => {
+      const c = state.clients.find(x => x.id === state.detailClientId);
+      if (c) {
+        c.lastChased = 'Just now';
+        saveState();
+        renderDashboard();
+        showToast(`Reminder sent to ${c.email}`);
+      }
+    });
+    document.getElementById('cdAddDocForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const c = state.clients.find(x => x.id === state.detailClientId);
+      const val = document.getElementById('cdNewDocInput').value.trim();
+      if (c && val) {
+        c.docs.push({ id: 'd' + Date.now(), title: val, status: 'missing', fileName: '' });
+        document.getElementById('cdNewDocInput').value = '';
+        saveState();
+        renderAll();
+      }
+    });
+
+    // Templates & Settings
+    document.getElementById('newTemplateForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('tplNameInput').value.trim();
+      const items = document.getElementById('tplItemsInput').value.split(',').map(s => s.trim()).filter(Boolean);
+      if (name && items.length) {
+        state.templates.push({ id: 'tpl-' + Date.now(), name, items });
+        e.target.reset();
+        saveState();
+        renderTemplates();
+        showToast(`Saved template "${name}"`);
+      }
+    });
+
+    document.getElementById('saveCadenceBtn').addEventListener('click', () => showToast('Auto-reminder cadence saved.'));
+
+    document.getElementById('saveBrandingBtn').addEventListener('click', () => {
+      state.firmName = document.getElementById('firmNameInput').value.trim() || 'Summit Ledger Advisory';
+      state.firmEmail = document.getElementById('firmEmailInput').value.trim() || 'close@summitledger.example';
+      state.firmColor = document.getElementById('firmColorSelect').value;
+      saveState();
+      renderAll();
+      showToast('Firm branding updated!');
+    });
+
+    document.getElementById('exportCsvBtn').addEventListener('click', () => {
+      const rows = [['Period', 'Client', 'Email', 'DueDate', 'Document', 'Status', 'FileName']];
+      state.clients.forEach(c => {
+        c.docs.forEach(d => {
+          rows.push([c.period, c.name, c.email, c.dueDate, d.title, d.status, d.fileName]);
+        });
+      });
+      const csv = rows.map(r => r.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `docready-close-status-${state.period}.csv`;
+      a.click();
+      showToast('Exported readiness CSV.');
+    });
+
+    document.getElementById('resetDemoBtn').addEventListener('click', () => {
+      try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+      state.clients = JSON.parse(JSON.stringify(DEFAULT_CLIENTS));
+      state.templates = JSON.parse(JSON.stringify(DEFAULT_TEMPLATES));
+      renderAll();
+      showToast('Demo data restored.');
+    });
+
+    loadState();
+    renderAll();
+  </script>
+</body>
+</html>
