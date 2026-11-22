@@ -35,6 +35,7 @@
 
       <!-- Desktop Nav -->
       <nav class="hidden md:flex items-center gap-1" aria-label="Primary navigation">
+        <button type="button" data-tab="home" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Home &amp; Pricing</button>
         <button type="button" data-tab="dashboard" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Readiness Board</button>
         <button type="button" data-tab="portal" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Client Magic-Link View</button>
         <button type="button" data-tab="templates" class="nav-btn px-3.5 py-2 rounded-lg text-sm font-medium transition-colors">Templates &amp; Reminders</button>
@@ -53,6 +54,7 @@
 
     <!-- Mobile Nav Drawer -->
     <div id="mobileMenu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-2 space-y-1">
+      <button type="button" data-tab="home" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Home &amp; Pricing</button>
       <button type="button" data-tab="dashboard" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Readiness Board</button>
       <button type="button" data-tab="portal" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Client Magic-Link View</button>
       <button type="button" data-tab="templates" class="nav-btn w-full text-left px-3 py-2 rounded-lg text-sm font-medium">Templates &amp; Reminders</button>
@@ -62,6 +64,136 @@
 
   <!-- Main Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- VIEW 0: SALES LANDING PAGE & PRICING -->
+    <section id="view-home" class="space-y-16 pb-12">
+      <!-- Hero -->
+      <div class="bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 text-center max-w-4xl mx-auto shadow-sm">
+        <span class="inline-block text-xs font-semibold px-3 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200 mb-4">
+          Built for Solo Bookkeepers &amp; Fractional CFOs
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-bold text-slate-900 tracking-tight leading-tight">
+          Stop chasing client bank statements every month.
+        </h1>
+        <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto mt-4">
+          DocReady gives every client a 1-click upload checklist with <strong>zero passwords</strong>, while you track every monthly close from one live readiness board.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <button type="button" data-go-pricing="1" class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-semibold text-sm shadow-sm transition-colors">
+            Get Founding Firm Pass ($79)
+          </button>
+          <button type="button" data-tab="dashboard" class="nav-btn w-full sm:w-auto px-6 py-3.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-semibold text-sm transition-colors">
+            Try Live Interactive Demo →
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 mt-4">14-day money-back guarantee · No client logins required · Ready in 2 minutes</p>
+      </div>
+
+      <!-- 3 Core Benefits -->
+      <div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="bg-white border border-slate-200 rounded-xl p-6">
+          <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-700 font-bold flex items-center justify-center mb-3">1</div>
+          <h2 class="text-base font-bold text-slate-900">Zero Client Passwords</h2>
+          <p class="text-sm text-slate-600 mt-1.5">Clients tap one magic link on their phone and upload PDFs, CSVs, or receipt photos in 20 seconds—no forgotten logins.</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-6">
+          <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-700 font-bold flex items-center justify-center mb-3">2</div>
+          <h2 class="text-base font-bold text-slate-900">Live Client × Month Matrix</h2>
+          <p class="text-sm text-slate-600 mt-1.5">See instantly who is Ready, Chasing, or Overdue across every monthly close without maintaining brittle Google Sheets.</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-6">
+          <div class="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 font-bold flex items-center justify-center mb-3">3</div>
+          <h2 class="text-base font-bold text-slate-900">Polite Auto-Reminders</h2>
+          <p class="text-sm text-slate-600 mt-1.5">Automatically nudge only the clients with missing items 5 days and 2 days before close—ready clients are never spammed.</p>
+        </div>
+      </div>
+
+      <!-- Pricing Section -->
+      <div id="pricingSection" class="max-w-5xl mx-auto space-y-6">
+        <div class="text-center">
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">Simple, Transparent Pricing</h2>
+          <p class="text-sm text-slate-600 mt-1">Lock in the limited Founding Firm Pass or start with a monthly plan. Cancel anytime.</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+          <!-- Founding Pass -->
+          <div class="bg-white border-2 border-blue-700 rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+            <div>
+              <span class="inline-block text-xs font-bold uppercase tracking-wide text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full">Limited · 10 Spots</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-3">Founding Firm Pass</h3>
+              <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-3xl font-bold font-mono text-slate-900">$79</span>
+                <span class="text-xs text-slate-500">one-time / lifetime</span>
+              </div>
+              <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                <li>✓ Up to 50 active clients</li>
+                <li>✓ Zero-login magic upload links</li>
+                <li>✓ Automated close reminders</li>
+                <li>✓ Custom firm branding &amp; CSV export</li>
+              </ul>
+            </div>
+            <button type="button" data-buy="founding" class="mt-6 w-full py-2.5 px-4 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-sm font-semibold transition-colors">
+              Claim Founding Pass ($79)
+            </button>
+          </div>
+
+          <!-- Solo -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <span class="inline-block text-xs font-semibold text-slate-600 bg-slate-100 px-2.5 py-0.5 rounded-full">For Solo Pros</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-3">Solo Bookkeeper</h3>
+              <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-3xl font-bold font-mono text-slate-900">$29</span>
+                <span class="text-xs text-slate-500">/ month</span>
+              </div>
+              <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                <li>✓ Up to 15 active clients</li>
+                <li>✓ Unlimited magic-link uploads</li>
+                <li>✓ 4 reusable close templates</li>
+                <li>✓ CSV readiness export</li>
+              </ul>
+            </div>
+            <button type="button" data-buy="solo" class="mt-6 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition-colors">
+              Start Solo ($29/mo)
+            </button>
+          </div>
+
+          <!-- Firm -->
+          <div class="bg-white border border-slate-200 rounded-2xl p-6 flex flex-col justify-between">
+            <div>
+              <span class="inline-block text-xs font-semibold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full">Most Popular</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-3">Growing Firm</h3>
+              <div class="mt-2 flex items-baseline gap-1">
+                <span class="text-3xl font-bold font-mono text-slate-900">$59</span>
+                <span class="text-xs text-slate-500">/ month</span>
+              </div>
+              <ul class="mt-4 space-y-2 text-sm text-slate-600">
+                <li>✓ Up to 50 active clients</li>
+                <li>✓ Automated T-5 / T-2 / overdue reminders</li>
+                <li>✓ Custom firm branding</li>
+                <li>✓ Priority email support</li>
+              </ul>
+            </div>
+            <button type="button" data-buy="firm" class="mt-6 w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition-colors">
+              Start Firm ($59/mo)
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="max-w-3xl mx-auto bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 space-y-4">
+        <h2 class="text-xl font-bold text-slate-900">Frequently Asked Questions</h2>
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">Do my clients need to create an account or remember a password?</h3>
+          <p class="text-sm text-slate-600 mt-1">No. Every client receives a unique magic link that opens directly in their phone or desktop browser.</p>
+        </div>
+        <div>
+          <h3 class="text-sm font-bold text-slate-900">What is your refund policy?</h3>
+          <p class="text-sm text-slate-600 mt-1">Every plan includes a 14-day, no-questions-asked money-back guarantee. Reply to your receipt email for a full refund.</p>
+        </div>
+      </div>
+    </section>
+
 
     <!-- VIEW 1: FIRM READINESS DASHBOARD -->
     <section id="view-dashboard" class="space-y-6">
@@ -333,6 +465,33 @@
   <div id="toast" class="hidden fixed bottom-5 right-5 z-50 bg-slate-900 text-white text-sm font-medium px-4 py-3 rounded-xl shadow-lg max-w-sm"></div>
 
   <script>
+
+    // PASTE YOUR 3 POLAR.SH CHECKOUT LINKS BELOW BEFORE DEPLOYING TO GITHUB
+    const POLAR_LINKS = {
+      founding: 'https://buy.polar.sh/polar_cl_hoZrH0dPO6wHyCO5mwCLL2obvLZ5xDgeAvqAl4OeCxW',
+      solo: 'https://buy.polar.sh/polar_cl_pp5S9XWPE1PqMSsPcGbjshaJEIh32VIctQqtm0N9L1M',
+      firm: 'https://buy.polar.sh/polar_cl_IuKz6xajdZvTvBgIazMizNFl0T60JcEIZMk0K2TjqCY'
+    };
+
+    document.addEventListener('click', (e) => {
+      const goPricing = e.target.closest('[data-go-pricing]');
+      if (goPricing) {
+        const el = document.getElementById('pricingSection');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+      const buyBtn = e.target.closest('[data-buy]');
+      if (buyBtn) {
+        const tier = buyBtn.dataset.buy;
+        const url = POLAR_LINKS[tier];
+        if (url && url.startsWith('https://')) {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        } else {
+          showToast('Paste your Polar.sh URL into POLAR_LINKS.' + tier + ' in index.html to activate live checkout.');
+        }
+      }
+    });
+
     const STORAGE_KEY = 'docready_state_v1';
 
     const DEFAULT_TEMPLATES = [
@@ -393,7 +552,7 @@
     ];
 
     let state = {
-      activeTab: 'dashboard',
+      activeTab: 'home',
       period: '2026-11',
       filter: 'all',
       search: '',
@@ -452,7 +611,7 @@
       document.getElementById('firmColorSelect').value = state.firmColor;
 
       // Tabs
-      ['dashboard', 'portal', 'templates', 'settings'].forEach(t => {
+      ['home', 'dashboard', 'portal', 'templates', 'settings'].forEach(t => {
         document.getElementById('view-' + t).classList.toggle('hidden', state.activeTab !== t);
       });
       document.querySelectorAll('.nav-btn').forEach(btn => {
@@ -856,6 +1015,11 @@
     });
 
     loadState();
+    renderAll();
+  </script>
+</body>
+</html>
+
     renderAll();
   </script>
 </body>
